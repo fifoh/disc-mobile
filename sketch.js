@@ -430,7 +430,7 @@ function setup() {
   // Create increment buttons
   let addButton = createImg('images/plus_ring.jpg', '+');
   addButton.size(45, 45);
-  addButton.position(windowWidth - 55 - addButton.width, 20);
+  addButton.position(windowWidth - 55 - addButton.width, 30);
   addButton.mousePressed(() => {
     if (numRings < 17) {
     numRings++;
@@ -443,7 +443,7 @@ function setup() {
 
   let removeButton = createImg('images/minus_ring.jpg', '-');
   removeButton.size(45, 45);
-  removeButton.position(windowWidth - 60- removeButton.width - addButton.width, 20);
+  removeButton.position(windowWidth - 60- removeButton.width - addButton.width, 30);
   removeButton.mousePressed(() => {
     if (numRings > 6) {
       numRings--;
@@ -457,11 +457,11 @@ function setup() {
   // create metro icon for tempo control
   metroImage = createImg('images/metro_icon.jpg', 'tempo');
   metroImage.size(45, 45);
-  metroImage.position(25 + playButton.width, 20)
+  metroImage.position(30 + playButton.width, 30)
   
   // Create duration slider
   durationSlider = createSlider(100, 1000, 550);
-  durationSlider.position(25 + playButton.width + metroImage.width, 30);
+  durationSlider.position(25 + playButton.width + metroImage.width, 40);
   durationSlider.style('width', '80px');
   durationSlider.value(550);
   durationSlider.addClass("mySliders");  
@@ -676,14 +676,14 @@ function playSound(buffer) {
 function createPlayButton() {
   playButton = createImg('images/play_icon.jpg', '▶');   
   playButton.size(45, 45); 
-  playButton.position(20, 20);
+  playButton.position(20, 30);
   playButton.mousePressed(togglePlayback);
 }
 
 function createClearButton() {
   clearButton = createImg('images/bin_icon.jpg', '✖');
   clearButton.size(45, 45);
-  clearButton.position(windowWidth-50, 20);
+  clearButton.position(windowWidth-50, 30);
   clearButton.mousePressed(() => {
     initializePointsArray(true); // Clear all points
   });
