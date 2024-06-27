@@ -1,4 +1,7 @@
-// add button functionality to drawButtonEllipses() function
+let isPlaying = false;
+let currentAngle = 0;
+let targetAngle = 0;
+let easingFactor = 0.05; // Adjust this value to control the easing speed
 
 let debounceTimer;
 let debounceTimerArray; 
@@ -32,7 +35,6 @@ let duration = 550; // (milliseconds)
 // Audio functions
 let audioBuffers = [];
 let timeouts = [];
-let isPlaying = false;
 let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 let bufferLoader;
 let startTime;
@@ -476,8 +478,6 @@ function setup() {
 
 function draw() {
   background(250);
-  
-  let currentAngle = 0;
 
   if (isPlaying) {
     duration_init = durationSlider.value();
@@ -487,11 +487,16 @@ function draw() {
     let elapsedTime = millis() - startTime;
     let totalRotationDuration = numSegments * duration;
     currentAngle = -(elapsedTime % totalRotationDuration) / totalRotationDuration * TWO_PI; // Reversed direction by negating currentAngle
+    targetAngle = currentAngle; // Keep target angle in sync with current angle during playback
+  } else {
+    // When not playing, ease the current angle towards 0
+    currentAngle += (0 - currentAngle) * easingFactor;
   }
 
   // Draw the static parts (circle) from the buffer
   image(graphics, 0, 0);
   image(buttonGraphics, 0, 0);
+
   // Translate and rotate the scene
   push();
   translate(circleCenterX, circleCenterY);
@@ -508,16 +513,16 @@ function draw() {
   for (let j = 0; j < numSegments; j++) {
     let quantizedAngle = j * angleIncrement;
     segmentAngles.push(atan2(sin(quantizedAngle), cos(quantizedAngle)) + HALF_PI);
-  } 
+  }
 
   // Draw the arc - you can't create notes here
   let arcRadius = (circleRadius * 1.06) + radiusIncrement * numRings; // Adjust this value as needed
   let arcStartAngle = 3.45; // Starting angle of the arc
   let arcEndAngle = 3.8; // Ending angle of the arc (adjust as needed)
   noStroke();
-  fill(90,90,90,15); // Black color
-  arc(circleCenterX, circleCenterY, arcRadius, arcRadius, arcStartAngle, arcEndAngle);  
-  
+  fill(90, 90, 90, 15); // Black color
+  arc(circleCenterX, circleCenterY, arcRadius, arcRadius, arcStartAngle, arcEndAngle);
+
   for (let i = 3; i <= numRings; i++) { // Start from 8 to exclude center
     let quantizedRadius = i * radiusIncrement;
     for (let j = 0; j < numSegments; j++) {
