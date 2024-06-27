@@ -457,12 +457,12 @@ function setup() {
   // create metro icon for tempo control
   metroImage = createImg('images/metro_icon.jpg', 'tempo');
   metroImage.size(45, 45);
-  metroImage.position(30 + playButton.width, 30)
+  metroImage.position(10 + playButton.width, 30)
   
   // Create duration slider
   durationSlider = createSlider(100, 1000, 550);
-  durationSlider.position(25 + playButton.width + metroImage.width, 40);
-  durationSlider.style('width', '80px');
+  durationSlider.position(10 + playButton.width + metroImage.width, 40);
+  durationSlider.style('width', '60px');
   durationSlider.value(550);
   durationSlider.addClass("mySliders");  
 
@@ -676,7 +676,7 @@ function playSound(buffer) {
 function createPlayButton() {
   playButton = createImg('images/play_icon.jpg', '▶');   
   playButton.size(45, 45); 
-  playButton.position(20, 30);
+  playButton.position(10, 30);
   playButton.mousePressed(togglePlayback);
 }
 
