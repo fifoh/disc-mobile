@@ -2,6 +2,7 @@ let isPlaying = false;
 let currentAngle = 0;
 let targetAngle = 0;
 let easingFactor = 0.05; // Adjust this value to control the easing speed
+let isEasing = false;
 
 let debounceTimer;
 let debounceTimerArray; 
@@ -488,9 +489,14 @@ function draw() {
     let totalRotationDuration = numSegments * duration;
     currentAngle = -(elapsedTime % totalRotationDuration) / totalRotationDuration * TWO_PI; // Reversed direction by negating currentAngle
     targetAngle = currentAngle; // Keep target angle in sync with current angle during playback
-  } else {
+  } else if (isEasing) {
     // When not playing, ease the current angle towards 0
     currentAngle += (0 - currentAngle) * easingFactor;
+    if (abs(currentAngle) < 0.001) { // Check if the angle is close enough to zero
+      currentAngle = 0;
+      isEasing = false;
+      playButton.removeAttribute('disabled'); // Re-enable the play button after easing
+    }
   }
 
   // Draw the static parts (circle) from the buffer
@@ -734,7 +740,7 @@ function clearTimeouts() {
 }
 
 function togglePlayback() {
-  if (!isPlaying) {
+  if (!isPlaying && !isEasing) {
     let duration_init = durationSlider.value();
     duration = map(duration_init, 100, 1000, 1000, 100);
     isPlaying = true;
@@ -742,12 +748,14 @@ function togglePlayback() {
     playAllNotes(10); // index to start playing from
     playButton.attribute('src', 'images/stop_icon.jpg'); // Change to stop icon
     durationSlider.attribute('disabled', '');
-  } else {
+  } else if (isPlaying) {
     // Stop playback
     isPlaying = false;
     clearTimeouts();
     playButton.attribute('src', 'images/play_icon.jpg'); // Change back to play icon
     durationSlider.removeAttribute('disabled');
+    isEasing = true; // Start easing
+    playButton.attribute('disabled', ''); // Disable the play button during easing
   }
 }
 
