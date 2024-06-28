@@ -396,18 +396,21 @@ function setup() {
   
   // Add options
   scalesDropdown.option('Select a Scale:', ''); // This will be the heading
-
-  scalesDropdown.option('--- Pentatonic ---', 'disabled');
+  
+  scalesDropdown.option('--- Pentatonic ---');
+  scalesDropdown.disable('--- Pentatonic ---');
   scalesDropdown.option('Major');
   scalesDropdown.option('Minor');
 
-  scalesDropdown.option('--- Modal ---', 'disabled');
+  scalesDropdown.option('--- Modal ---');
+  scalesDropdown.disable('--- Modal ---');
   scalesDropdown.option('Ionian');
   scalesDropdown.option('Dorian');
   scalesDropdown.option('Mixolydian');
   scalesDropdown.option('Aeolian');
   
-  scalesDropdown.option('--- Other ---', 'disabled');
+  scalesDropdown.option('--- Other ---');
+  scalesDropdown.disable('--- Other ---');
   scalesDropdown.option('Chromatic');
   scalesDropdown.option('Harmonic Minor');
   scalesDropdown.option('Whole Tone');
@@ -420,7 +423,8 @@ function setup() {
   instrumentDropdown = createSelect();
   
   // Add options to the dropdown
-  instrumentDropdown.option('Select an Instrument:', '');
+  instrumentDropdown.option('Instrument:');
+  instrumentDropdown.disable('Instrument:');
   instrumentDropdown.option('Comb');
   instrumentDropdown.option('Piano');
   instrumentDropdown.option('Harp');
