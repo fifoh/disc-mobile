@@ -903,8 +903,8 @@ function drawButtonEllipses() {
     let buttonSize = radiusIncrement * 0.95; // Scale button size with radius increment
     
     // Calculate the position for each ellipse based on the stationary angle
-    let buttonX = circleCenterX + (quantizedRadius + radiusIncrement * offsetFactor) * cos(stationary_angle);
-    let buttonY = circleCenterY + (quantizedRadius + radiusIncrement * offsetFactor) * sin(stationary_angle);
+    let buttonX = circleCenterX + (quantizedRadius + radiusIncrement * offsetFactor) * cos(stationary_angle+ i*0.03);
+    let buttonY = circleCenterY + (quantizedRadius + radiusIncrement * offsetFactor) * sin(stationary_angle+ i*0.03);
     
     // Adjust color index using scaleMappings
     let originalIndex = scaleMappings[i - 3];
