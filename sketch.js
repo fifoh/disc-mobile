@@ -15,7 +15,7 @@ let ellipseButtons = [];
 let ellipseColors = [
   [255,228,209],   // Red
   [203,237,209],   // Green
-  [187,234,255]    // Blue
+  [167,234,255]    // Blue
 ];
 
 let buttonGraphics;
@@ -670,6 +670,11 @@ function initializePointsArray(clear = false) {
   points = newPoints;
 }
 
+function clearInstruments() {
+  individualInstrumentArray = new Array(37).fill(1);
+  loadAudioSet(individualInstrumentArray);
+}
+
 function playSound(buffer) {
   let source = audioContext.createBufferSource();
   source.buffer = buffer;
@@ -693,6 +698,7 @@ function createClearButton() {
   clearButton.position(windowWidth-50, 30);
   clearButton.mousePressed(() => {
     initializePointsArray(true); // Clear all points
+    clearInstruments();
   });
 }
 
