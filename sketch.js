@@ -15,6 +15,9 @@ let ellipseColors = [
   [167, 234, 255], // Blue
 ];
 
+
+let randomButton;
+
 let buttonGraphics;
 let gapIndex = 9;
 let individualInstrumentArray = new Array(37).fill(1);
@@ -386,6 +389,11 @@ function setup() {
   instrumentDropdown.changed(changeInstrument);
 
   positionDropdownMenus();
+  
+  randomButton = createImg("images/random_button.jpg", "R")
+  randomButton.size(45, 45);
+  randomButton.touchStarted(randomiseEverything);
+  positionrandomButton();    
 
   let addButton = createImg("images/plus_ring.jpg", "+");
   addButton.size(45, 45);
@@ -804,5 +812,59 @@ function drawButtonEllipses() {
     });
     buttonGraphics.noStroke();
     buttonGraphics.ellipse(buttonX, buttonY, buttonSize, buttonSize);
+  }
+}
+
+
+function positionrandomButton() {
+  randomButton.position(windowWidth - 50, 80);
+}
+
+function randomiseEverything() {
+  randomTempo = randomInt(300, 1000); // avoid slowest option
+  durationSlider.value(randomTempo);
+
+  // start with number of notes
+  numRings = int(random(10)) + 6;
+  
+  randomScale = random(["Major Pentatonic", "Minor Pentatonic", "Major scale", "Dorian mode", "Mixolydian mode", "Aeolian mode", "Chromatic", "Harmonic Minor", "Whole Tone", "Octatonic"]);
+  scalesDropdown.selected(randomScale);
+  changeScale();  
+  
+  points = [];
+  initializePointsArray();
+  
+  createRandomPoints(int(random(30)+10));
+  
+  
+  drawConcentricCircles();
+  ellipseButtons = [];
+  drawButtonEllipses();  
+  
+  // individ. instruments
+  individualInstrumentArray = [];
+  for (let i = 0; i < 37; i++) {
+  individualInstrumentArray.push(randomInt(1, 3));
+}
+  loadAudioSet(individualInstrumentArray);    
+  
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createRandomPoints(numPoints) {
+  for (let n = 0; n < numPoints; n++) {
+    let i = Math.floor(Math.random() * (numRings + 1));
+    let j = Math.floor(Math.random() * numSegments);
+
+    // Ensure no repeated adjacent points on the same row
+    if (points[i][j] || (j > 0 && points[i][j - 1]) || (j < numSegments - 1 && points[i][j + 1])) {
+      n--; // Skip this iteration and try again
+      continue;
+    }
+
+    points[i][j] = true;
   }
 }
