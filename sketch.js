@@ -15,6 +15,8 @@ let ellipseColors = [
   [167, 234, 255], // Blue
 ];
 
+let lastState = '';
+
 
 let randomButton;
 
@@ -86,6 +88,9 @@ BufferLoader.prototype.load = function () {
 function preload() {
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   loadAudioSet(individualInstrumentArray);
+  audioContext.suspend().then(() => {
+    console.log('AudioContext state in preload:', audioContext.state);
+  });  
 }
 
 // Load audio set
@@ -354,6 +359,12 @@ let octatonic = {
 let scaleMappings = majorPentatonic;
 
 function setup() {
+  audioContext.suspend().then(() => {
+    console.log('AudioContext suspended in setup:', audioContext.state);
+  }).catch((err) => {
+    console.error('Error suspending AudioContext:', err);
+  });  
+  
   createCanvas(windowWidth, windowHeight);
   window.addEventListener("resize", resizeCanvasToWindow);
   frameRate(60);
@@ -506,6 +517,18 @@ function draw() {
 }
 
 function touchStarted() {
+  if (audioContext.state !== 'running') {
+    userStartAudio().then(() => {
+      audioContext.resume().then(() => {
+        console.log('AudioContext resumed on mousePressed:', audioContext.state);
+      }).catch((err) => {
+        console.error('Error resuming AudioContext:', err);
+      });
+    }).catch((err) => {
+      console.error('Error starting user audio:', err);
+    });
+  }  
+  
   if (touches.length > 0) {
     let touchX = touches[0].x;
     let touchY = touches[0].y;
@@ -661,12 +684,14 @@ function togglePlayback() {
     startTime = millis();
     playAllNotes(10); // index to start playing from
     playButton.attribute("src", "images/stop_icon.jpg");
+    randomButton.attribute('src', 'images/random_button_disabled.jpg');
     durationSlider.attribute("disabled", "");
   } else if (isPlaying) {
     // Stop
     isPlaying = false;
     clearTimeouts();
     playButton.attribute("src", "images/play_icon.jpg");
+    randomButton.attribute('src', 'images/random_button.jpg');
     durationSlider.removeAttribute("disabled");
     isEasing = true;
     playButton.attribute("disabled", "");
@@ -821,33 +846,35 @@ function positionrandomButton() {
 }
 
 function randomiseEverything() {
-  randomTempo = randomInt(300, 1000); // avoid slowest option
-  durationSlider.value(randomTempo);
+  if (!isPlaying) {
+    randomTempo = randomInt(300, 1000); // avoid slowest option
+    durationSlider.value(randomTempo);
 
-  // start with number of notes
-  numRings = int(random(10)) + 6;
-  
-  randomScale = random(["Major Pentatonic", "Minor Pentatonic", "Major scale", "Dorian mode", "Mixolydian mode", "Aeolian mode", "Chromatic", "Harmonic Minor", "Whole Tone", "Octatonic"]);
-  scalesDropdown.selected(randomScale);
-  changeScale();  
-  
-  points = [];
-  initializePointsArray();
-  
-  createRandomPoints(int(random(30)+10));
-  
-  
-  drawConcentricCircles();
-  ellipseButtons = [];
-  drawButtonEllipses();  
-  
-  // individ. instruments
-  individualInstrumentArray = [];
-  for (let i = 0; i < 37; i++) {
-  individualInstrumentArray.push(randomInt(1, 3));
-}
-  loadAudioSet(individualInstrumentArray);    
-  
+    // start with number of notes
+    numRings = int(random(10)) + 6;
+
+    randomScale = random(["Major Pentatonic", "Minor Pentatonic", "Major scale", "Dorian mode", "Mixolydian mode", "Aeolian mode", "Chromatic", "Harmonic Minor", "Whole Tone", "Octatonic"]);
+    scalesDropdown.selected(randomScale);
+    changeScale();  
+
+    points = [];
+    initializePointsArray();
+
+    createRandomPoints(int(random(30)+10));
+
+
+    drawConcentricCircles();
+    ellipseButtons = [];
+    drawButtonEllipses();  
+
+    // individ. instruments
+    individualInstrumentArray = [];
+    for (let i = 0; i < 37; i++) {
+    individualInstrumentArray.push(randomInt(1, 3));
+  }
+    loadAudioSet(individualInstrumentArray);    
+
+  }
 }
 
 function randomInt(min, max) {
